@@ -11,29 +11,28 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="36dp"
         android:text="Join a session"
         android:textColor="@color/colorPrimary"
         android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="64dp"
+        android:layout_width="289dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
         android:hint=" Username"
         android:singleLine="true"
         android:textAlignment="center"
         android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
 
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -55,7 +54,7 @@
         android:id="@+id/btnJoin"
         android:layout_width="178dp"
         android:layout_height="49dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:text="Join"
         android:textAllCaps="false"
@@ -63,7 +62,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editSessID" />
 
@@ -71,11 +70,11 @@
         android:id="@+id/errorTextView"
         android:layout_width="242dp"
         android:layout_height="33dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="12dp"
         android:textAlignment="center"
         android:textColor="#FA0C0C"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnJoin" />
 

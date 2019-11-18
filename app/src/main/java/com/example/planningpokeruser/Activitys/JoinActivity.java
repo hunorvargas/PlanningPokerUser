@@ -1,4 +1,4 @@
-package com.example.planningpokeruser.Activitiys;
+package com.example.planningpokeruser.Activitys;
 
 import android.content.Intent;
 import android.os.Bundle;

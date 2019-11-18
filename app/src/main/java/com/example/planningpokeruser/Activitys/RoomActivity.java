@@ -1,4 +1,4 @@
-package com.example.planningpokeruser.Activitiys;
+package com.example.planningpokeruser.Activitys;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,9 +24,10 @@ public class RoomActivity extends AppCompatActivity {
 
 
     TextView questiontextView,questionDescTextView;
-    Button voteButton1,voteButton2,voteButton3,voteButton4,voteButton5,novoteButton;
+    Button voteButton1,voteButton2,voteButton3,voteButton4,voteButton5,novoteButton,sendVoteButton;
     private User newUser;
     private Question question;
+    private String vote=" ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,51 +74,76 @@ public class RoomActivity extends AppCompatActivity {
         voteButton1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("1");
+                setVote("1");
                 Toast.makeText(RoomActivity.this, "User Voted 1", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
+
             }
         });
         voteButton2.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("2");
+                setVote("2");
                 Toast.makeText(RoomActivity.this, "User Voted 2", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
             }
         });
         voteButton3.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("3");
+                setVote("3");
                 Toast.makeText(RoomActivity.this, "User Voted 3", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
+
             }
         });
         voteButton4.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("4");
+                setVote("4");
                 Toast.makeText(RoomActivity.this, "User Voted 4", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
+
             }
         });
         voteButton5.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("5");
+                setVote("5");
                 Toast.makeText(RoomActivity.this, "User Voted 5", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
+            }
+        });
+
+        novoteButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+                setVote("No Voted");
+                Toast.makeText(RoomActivity.this, "User  No Voted!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        sendVoteButton.setOnClickListener(new Button.OnClickListener() {
+
+            public void onClick(View v) {
+                if(getVote().equals(" ")){
+
+                    Toast.makeText(RoomActivity.this, "No vote selected", Toast.LENGTH_LONG).show();
+                }
+                else{
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference();
+
+                    myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue(getVote());
+
+                    Toast.makeText(RoomActivity.this, "Vote "+ getVote() + "Sendet!", Toast.LENGTH_SHORT).show();
+
+                    voteButton1.setClickable(false);
+                    voteButton2.setClickable(false);
+                    voteButton3.setClickable(false);
+                    voteButton4.setClickable(false);
+                    voteButton5.setClickable(false);
+                    novoteButton.setClickable(false);
+                    sendVoteButton.setClickable(false);
+                }
+
+
             }
         });
 
@@ -146,22 +172,9 @@ public class RoomActivity extends AppCompatActivity {
             });
 
             myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue(" ");
-            novoteed();
+            //novoteed();
 
             Log.d("create", "nem kell data added");
-    }
-
-    private void novoteed() {
-        novoteButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference();
-                myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue("No Voted");
-                Toast.makeText(RoomActivity.this, "User No Voted", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RoomActivity.this, MainActivity.class ));
-            }
-        });
     }
 
 
@@ -169,15 +182,18 @@ public class RoomActivity extends AppCompatActivity {
 
         questiontextView=findViewById(R.id.textViewQuestion);
         questionDescTextView=findViewById(R.id.questionDescpTextView);
+
         voteButton1 = findViewById(R.id.buttonVote1);
         voteButton2 = findViewById(R.id.buttonVote2);
         voteButton3 = findViewById(R.id.buttonVote3);
         voteButton4 = findViewById(R.id.buttonVote4);
         voteButton5 = findViewById(R.id.buttonVote5);
         novoteButton=findViewById(R.id.novoteButton);
+        sendVoteButton=findViewById(R.id.sendVoteButton);
 
         newUser=new User();
         question=new Question();
+
         Intent intent= getIntent();
 
         newUser.setUserName(intent.getStringExtra("Username"));
@@ -197,8 +213,8 @@ public class RoomActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                question.setQuestionDesc(dataSnapshot.getValue().toString());
-                questionDescTextView.setText(question.getQuestionDesc());
+//                question.setQuestionDesc(dataSnapshot.getValue().toString());
+               // questionDescTextView.setText(question.getQuestionDesc());
             }
 
             @Override
@@ -217,8 +233,8 @@ public class RoomActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                question.setQuestion(dataSnapshot.getValue().toString());
-                questiontextView.setText(question.getQuestion());
+//                question.setQuestion(dataSnapshot.getValue().toString());
+  //              questiontextView.setText(question.getQuestion());
             }
 
             @Override
@@ -228,4 +244,11 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public String getVote() {
+        return vote;
+    }
+
+    public void setVote(String vote) {
+        this.vote = vote;
+    }
 }
