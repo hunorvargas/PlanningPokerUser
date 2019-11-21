@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class RoomActivity extends AppCompatActivity {
 
 
@@ -27,6 +29,7 @@ public class RoomActivity extends AppCompatActivity {
     Button voteButton1,voteButton2,voteButton3,voteButton4,voteButton5,novoteButton,sendVoteButton;
     private User newUser;
     private Question question;
+    ArrayList<String> questions = new ArrayList<>();
     private String vote=" ";
 
     @Override
@@ -35,8 +38,8 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         init();
-        addUserDatabase();
         addVote();
+
     }
 
     private void addVote() {
@@ -149,35 +152,6 @@ public class RoomActivity extends AppCompatActivity {
 
     }
 
-    private void addUserDatabase() {
-
-        Log.d("create", "adduser");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
-        Log.d("create", "nem kell Onclick");
-
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    long currentSessionID=dataSnapshot.getChildrenCount();
-                    Log.d("create", "kell curent:"+newUser.getSessionId());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d("create", "kell error");
-                }
-            });
-
-            myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue(" ");
-            //novoteed();
-
-            Log.d("create", "nem kell data added");
-    }
-
-
     private void init() {
 
         questiontextView=findViewById(R.id.textViewQuestion);
@@ -197,9 +171,8 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent= getIntent();
 
         newUser.setUserName(intent.getStringExtra("Username"));
-        Log.d("create", "kell Room:"+newUser.getUserName());
         newUser.setSessionId(intent.getStringExtra("SessionId"));
-        Log.d("create", "kell Room:"+newUser.getSessionId());
+
 
         showQuestion();
         showQuestionDescrp();
@@ -226,22 +199,9 @@ public class RoomActivity extends AppCompatActivity {
 
     private void showQuestion() {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("session").child(newUser.getSessionId()).child("Questions").child("Question");
-
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                question.setQuestion(dataSnapshot.getValue().toString());
   //              questiontextView.setText(question.getQuestion());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public String getVote() {
@@ -250,5 +210,46 @@ public class RoomActivity extends AppCompatActivity {
 
     public void setVote(String vote) {
         this.vote = vote;
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference  myRef = database.getReference().child("Session").child("Groups").child(newUser.getSessionId()).child("Questions");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("create1", "Questions");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String questionID=datas.getKey();
+                    questions.add(questionID);
+                    Log.d("create1", "QuestionNr: " + questionID);
+                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").child(newUser.getSessionId()).child(questionID).child("Question");
+                    myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String post = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "Question: " + post);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

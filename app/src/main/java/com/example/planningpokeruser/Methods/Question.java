@@ -4,6 +4,8 @@ public class Question {
 
     private String question;
     private String questionDesc;
+    private String questionVisibility;
+    private String questionTime;
 
     public String getQuestion() {
         return question;
@@ -21,12 +23,29 @@ public class Question {
         this.questionDesc = questionInf;
     }
 
+    public String getQuestionVisibility() {
+        return questionVisibility;
+    }
+
+    public void setQuestionVisibility(String questionVisibility) {
+        this.questionVisibility = questionVisibility;
+    }
+
+    public String getQuestionTime() {
+        return questionTime;
+    }
+
+    public void setQuestionTime(String questionTime) {
+        this.questionTime = questionTime;
+    }
 
     @Override
     public String toString() {
         return "Question{" +
-                ", question='" + question + '\'' +
-                ", questionInf='" + questionDesc + '\'' +
+                "question='" + question + '\'' +
+                ", questionDesc='" + questionDesc + '\'' +
+                ", questionVisibility='" + questionVisibility + '\'' +
+                ", questionTime='" + questionTime + '\'' +
                 '}';
     }
 }

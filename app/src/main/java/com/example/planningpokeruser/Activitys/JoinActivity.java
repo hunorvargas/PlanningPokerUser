@@ -7,23 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.planningpokeruser.R;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
+
 
 public class JoinActivity extends AppCompatActivity {
     EditText editUsername,editSessID;
@@ -50,49 +43,45 @@ public class JoinActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(JoinActivity.this,RoomActivity.class);
-                errorText.setText(" ");
+               // errorText.setText(" ");
+
                 intent.putExtra("Username",editUsername.getText().toString().trim());
                 intent.putExtra("SessionId",editSessID.getText().toString().trim());
                 setSessionid(editSessID.getText().toString().trim());
                 setUsernamesesion(editUsername.getText().toString().trim());
-
-                getsessionUsernames();
-
                 Log.d("create", "kell join:"+editSessID.getText().toString().trim());
 
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if(isCompletdata()){
-                            startActivity(intent);
-                        }
-                        else {
+                if(isCompletdata() && isagoodSessionID() && isagoodusername()){
 
-                           // Toast.makeText(JoinActivity.this,"Error!", Toast.LENGTH_LONG).show();
-                            Log.d("create", "Hiba:");
-                            //Ide kell egy WrongUsername or SessionID toast
-                        }
-                    }
-                }, 2000);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference  myRef = database.getReference();
+
+                    myRef.child("Session").child("Groups").child(sessionid).child("Users").child(getUsernamesesion()).setValue(getUsernamesesion());
+
+                    setToastText("Join Sucsess!");
+                    startActivity(intent);
+                }
+
             }
         });
     }
 
     private void init() {
+
         editUsername = findViewById(R.id.editUsername);
         editSessID =  findViewById(R.id.editSessID);
         btnJoin = findViewById(R.id.btnJoin);
         errorText=findViewById(R.id.errorTextView);
-        getsessionids();
 
     }
 
    private boolean isCompletdata(){
-       if (editUsername.getText().toString().isEmpty() && editSessID.getText().toString().isEmpty()){
+       if (editUsername.getText().toString().isEmpty() || editSessID.getText().toString().isEmpty()){
 
           // Toast.makeText(JoinActivity.this,"Missing UserName or SessionID!", Toast.LENGTH_SHORT).show();
-            errorText.setText("Missing UserName or SessionID!");
-
+           setToastText("Missing UserName or SessionID!");
+           // errorText.setText("Missing UserName or SessionID!");
+            return  false;
        }
        else {
            if(isagoodSessionID() && isagoodusername()) {
@@ -104,14 +93,15 @@ public class JoinActivity extends AppCompatActivity {
    }
 
     private boolean isagoodusername() {
-        Log.d("create", "kell isagoodusername");
         Log.d("create", "Users Size: " + Users.size());
         int i = 0;
         while (i < Users.size()) {
             Log.d("create", "Whiile Username: "+Users.get(i));
             if(Users.get(i).equals(getUsernamesesion())){
                 Log.d("create", "kell username egyenlo");
-                errorText.setText("This UserName is busy!");
+
+                setToastText("This UserName is busy!");
+               // errorText.setText("This UserName is busy!");
                 return false;
 
             }
@@ -135,7 +125,8 @@ public class JoinActivity extends AppCompatActivity {
             }
             i++;
         }
-        errorText.setText("This Session is not available!");
+        setToastText("This Session is not available!");
+        //errorText.setText("This Session is not available!");
         //Toast.makeText(JoinActivity.this,"This Session is not available!", Toast.LENGTH_LONG).show();
         Log.d("create", "kell session nincs");
         return false;
@@ -157,63 +148,43 @@ public class JoinActivity extends AppCompatActivity {
         this.usernamesesion = usernamesesion;
     }
 
-    public void getsessionids(){
+    private void setToastText(String text){
+        Toast.makeText(JoinActivity.this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference  myRef = database.getReference();
-        final CountDownLatch done = new CountDownLatch(1);
-        myRef.addChildEventListener((new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                //Get the node from the datasnapshot
-                String myParentNode = dataSnapshot.getKey();
-                for (DataSnapshot child: dataSnapshot.getChildren())
-                {
-                    String key = child.getKey().toString();
-                    sessionIDs.add(key);
-                    Log.d("create", "ID:"+ key);
+        myRef.child("Session").child("Groups").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("create1", "SessionIDSnap");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String sessionID=datas.getKey();
+                    sessionIDs.add(sessionID);
+                    Log.d("create1", "SessionID: " + sessionID);
                 }
 
             }
-
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
+        });
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        }));
-    }
-
-    public void getsessionUsernames(){
-        Log.d("create", "Users");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        Log.d("create", "Users ID:"+getSessionid());
-        DatabaseReference  myRef = database.getReference().child("session").child(getSessionid()).child("Users");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("Session").child("Groups").child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("create", "UsersName Snap");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
-                    String classnames=datas.getKey();
-                    Users.add(classnames);
-                    Log.d("create", "UsersName: " + classnames);
+                    String username=datas.getKey();
+                    Users.add(username);
+                    Log.d("create", "UsersName: " + username);
                 }
             }
             @Override
