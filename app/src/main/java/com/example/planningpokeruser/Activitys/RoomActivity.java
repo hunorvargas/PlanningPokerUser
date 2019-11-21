@@ -174,33 +174,29 @@ public class RoomActivity extends AppCompatActivity {
         newUser.setSessionId(intent.getStringExtra("SessionId"));
 
 
-        showQuestion();
-        showQuestionDescrp();
+
     }
 
     private void showQuestionDescrp() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("session").child(newUser.getSessionId()).child("Questions").child("QuestionDesc");
+        Log.d("create1", "showQuestionDesc");
 
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                question.setQuestionDesc(dataSnapshot.getValue().toString());
-               // questionDescTextView.setText(question.getQuestionDesc());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        if(question.getQuestionVisibility().equals("true")){
+            questionDescTextView.setText(question.getQuestionDesc());
+        }
+        else{
+            Log.d("create1", "false");
+        }
     }
 
     private void showQuestion() {
+        Log.d("create1", "showQuestion");
+          if(question.getQuestionVisibility().equals("true")){
+              questiontextView.setText(question.getQuestion());
+          }
+          else{
+              Log.d("create1", "false");
+          }
 
-//                question.setQuestion(dataSnapshot.getValue().toString());
-  //              questiontextView.setText(question.getQuestion());
 
     }
 
@@ -229,12 +225,51 @@ public class RoomActivity extends AppCompatActivity {
                     String questionID=datas.getKey();
                     questions.add(questionID);
                     Log.d("create1", "QuestionNr: " + questionID);
-                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").child(newUser.getSessionId()).child(questionID).child("Question");
+                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
+                    child(newUser.getSessionId()).child("Questions").child(questionID).child("Question");
                     myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String post = dataSnapshot.getValue(String.class);
-                            Log.d("create1", "Question: " + post);
+                            String question1 = dataSnapshot.getValue(String.class);
+                            question.setQuestion(question1);
+
+                            Log.d("create1", "Question: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionDesc");
+                    myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            question.setQuestionDesc(question1);
+
+                            Log.d("create1", "Question: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionVisibility");
+                    myRef4.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "Question: " + question1);
+                            question.setQuestionVisibility(question1);
+                            showQuestion();
+                            showQuestionDescrp();
+
                         }
 
                         @Override
@@ -251,5 +286,6 @@ public class RoomActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }
