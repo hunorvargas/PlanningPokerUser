@@ -3,17 +3,24 @@ package com.example.planningpokeruser.Activitys;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.planningpokeruser.Fragments.StaticsFragment;
+import com.example.planningpokeruser.Fragments.VoteFragment;
 import com.example.planningpokeruser.Methods.Question;
 import com.example.planningpokeruser.Methods.User;
 import com.example.planningpokeruser.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,11 +32,15 @@ import java.util.ArrayList;
 public class RoomActivity extends AppCompatActivity {
 
 
-    TextView questiontextView,questionDescTextView;
+
     Button voteButton1,voteButton2,voteButton3,voteButton4,voteButton5,novoteButton,sendVoteButton;
     private User newUser;
     private Question question;
-    ArrayList<String> questions = new ArrayList<>();
+    private BottomNavigationView navigationView;
+    private FrameLayout frameLayout;
+    private VoteFragment voteFragment;
+    private StaticsFragment staticsFragment;
+    ArrayList<Question> questions = new ArrayList<>();
     private String vote=" ";
 
     @Override
@@ -38,124 +49,114 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         init();
-        addVote();
 
     }
 
-    private void addVote() {
-        Log.d("create", "adduser");
+   private void vote() {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
-        Log.d("create", "nem kell Onclick");
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                long currentSessionID=dataSnapshot.getChildrenCount();
-               // newUser.setSessionId(Long.toString(currentSessionID));
-                Log.d("create", "kell:"+newUser.getSessionId());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("create", "kell error");
-            }
-        });
-
-        vote();
+        if (question.getQuestionVisibility().equals("true")) {
 
 
-        Log.d("create", "nem kell data added");
-        //startActivity(new Intent(CreateActivity.this, RoomActivity.class ));
+            voteButton1.setClickable(false);
+            voteButton2.setClickable(false);
+            voteButton3.setClickable(false);
+            voteButton4.setClickable(false);
+            voteButton5.setClickable(false);
+            novoteButton.setClickable(false);
+            sendVoteButton.setClickable(false);
 
-    }
 
-    private void vote() {
+            voteButton1.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
 
-        voteButton1.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
+                    setVote("1");
+                    setToastText("User Voted 1");
 
-                setVote("1");
-                Toast.makeText(RoomActivity.this, "User Voted 1", Toast.LENGTH_SHORT).show();
 
-            }
-        });
-        voteButton2.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                setVote("2");
-                Toast.makeText(RoomActivity.this, "User Voted 2", Toast.LENGTH_SHORT).show();
-            }
-        });
-        voteButton3.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                setVote("3");
-                Toast.makeText(RoomActivity.this, "User Voted 3", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        voteButton4.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                setVote("4");
-                Toast.makeText(RoomActivity.this, "User Voted 4", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        voteButton5.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                setVote("5");
-                Toast.makeText(RoomActivity.this, "User Voted 5", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        novoteButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                setVote("No Voted");
-                Toast.makeText(RoomActivity.this, "User  No Voted!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        sendVoteButton.setOnClickListener(new Button.OnClickListener() {
-
-            public void onClick(View v) {
-                if(getVote().equals(" ")){
-
-                    Toast.makeText(RoomActivity.this, "No vote selected", Toast.LENGTH_LONG).show();
                 }
-                else{
+            });
+            voteButton2.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
 
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference();
+                    setVote("2");
+                    setToastText("User Voted 2");
 
-                    myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue(getVote());
-
-                    Toast.makeText(RoomActivity.this, "Vote "+ getVote() + "Sendet!", Toast.LENGTH_SHORT).show();
-
-                    voteButton1.setClickable(false);
-                    voteButton2.setClickable(false);
-                    voteButton3.setClickable(false);
-                    voteButton4.setClickable(false);
-                    voteButton5.setClickable(false);
-                    novoteButton.setClickable(false);
-                    sendVoteButton.setClickable(false);
                 }
+            });
+            voteButton3.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+
+                    setVote("3");
+                    setToastText("User Voted 3");
 
 
-            }
-        });
+                }
+            });
+            voteButton4.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
 
+                    setVote("4");
+                    setToastText("User Voted 5");
+
+
+                }
+            });
+            voteButton5.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+
+                    setVote("5");
+                    setToastText("User Voted 5");
+                    Toast.makeText(RoomActivity.this, "User Voted 5", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            novoteButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+
+                    setVote("No Voted");
+                    setToastText("User  No Voted!");
+
+                }
+            });
+
+            sendVoteButton.setOnClickListener(new Button.OnClickListener() {
+
+                public void onClick(View v) {
+                    if (getVote().equals(" ")) {
+
+                        setToastText("No vote selected");
+                    } else {
+
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference();
+
+                        myRef.child("session").child(newUser.getSessionId()).child("Users").child(newUser.getUserName()).setValue(getVote());
+                        myRef.child("Session").child("Groups").child(newUser.getSessionId()).child("Questions")
+                                .child(question.getID()).child("Results").child(newUser.getUserName()).setValue(getVote());
+                        setToastText("Vote " + getVote() + "Sendet!");
+
+                        voteButton1.setClickable(false);
+                        voteButton2.setClickable(false);
+                        voteButton3.setClickable(false);
+                        voteButton4.setClickable(false);
+                        voteButton5.setClickable(false);
+                        novoteButton.setClickable(false);
+                        sendVoteButton.setClickable(false);
+                    }
+
+
+                }
+            });
+        }
     }
 
     private void init() {
 
-        questiontextView=findViewById(R.id.textViewQuestion);
-        questionDescTextView=findViewById(R.id.questionDescpTextView);
+
+        frameLayout=findViewById(R.id.framelayout);
+        navigationView=findViewById(R.id.navigationbottom);
+        voteFragment=new VoteFragment();
+        staticsFragment=new StaticsFragment();
 
         voteButton1 = findViewById(R.id.buttonVote1);
         voteButton2 = findViewById(R.id.buttonVote2);
@@ -165,6 +166,14 @@ public class RoomActivity extends AppCompatActivity {
         novoteButton=findViewById(R.id.novoteButton);
         sendVoteButton=findViewById(R.id.sendVoteButton);
 
+        voteButton1.setClickable(false);
+        voteButton2.setClickable(false);
+        voteButton3.setClickable(false);
+        voteButton4.setClickable(false);
+        voteButton5.setClickable(false);
+        novoteButton.setClickable(false);
+        sendVoteButton.setClickable(false);
+
         newUser=new User();
         question=new Question();
 
@@ -173,15 +182,57 @@ public class RoomActivity extends AppCompatActivity {
         newUser.setUserName(intent.getStringExtra("Username"));
         newUser.setSessionId(intent.getStringExtra("SessionId"));
 
+        setFragment(voteFragment);
+        navigationViewlistener();
 
 
+    }
+
+    private void navigationViewlistener() {
+        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                switch ((menuItem.getItemId())){
+                    case R.id.voteQuestionIcon:
+                        setFragment(voteFragment);
+                        voteButton1.setVisibility(View.VISIBLE);
+                        voteButton2.setVisibility(View.VISIBLE);
+                        voteButton3.setVisibility(View.VISIBLE);
+                        voteButton4.setVisibility(View.VISIBLE);
+                        voteButton5.setVisibility(View.VISIBLE);
+                        novoteButton.setVisibility(View.VISIBLE);
+                        sendVoteButton.setVisibility(View.VISIBLE);
+                        return true;
+                    case R.id.viewStaticsIcon:
+                        setFragment(staticsFragment);
+                        voteButton1.setVisibility(View.GONE);
+                        voteButton2.setVisibility(View.GONE);
+                        voteButton3.setVisibility(View.GONE);
+                        voteButton4.setVisibility(View.GONE);
+                        voteButton5.setVisibility(View.GONE);
+                        novoteButton.setVisibility(View.GONE);
+                        sendVoteButton.setVisibility(View.GONE);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setFragment(Fragment fragments) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.framelayout,fragments);
+        fragmentTransaction.commit();
     }
 
     private void showQuestionDescrp() {
         Log.d("create1", "showQuestionDesc");
 
         if(question.getQuestionVisibility().equals("true")){
-            questionDescTextView.setText(question.getQuestionDesc());
+
+            voteFragment.setQuestionDescTextView(question.getQuestionDesc());
+           // questionDescTextView.setText(question.getQuestionDesc());
         }
         else{
             Log.d("create1", "false");
@@ -191,7 +242,9 @@ public class RoomActivity extends AppCompatActivity {
     private void showQuestion() {
         Log.d("create1", "showQuestion");
           if(question.getQuestionVisibility().equals("true")){
-              questiontextView.setText(question.getQuestion());
+
+              voteFragment.setQuestiontextView(question.getQuestion());
+             // questiontextView.setText(question.getQuestion());
           }
           else{
               Log.d("create1", "false");
@@ -206,6 +259,10 @@ public class RoomActivity extends AppCompatActivity {
 
     public void setVote(String vote) {
         this.vote = vote;
+    }
+
+    private void setToastText(String text){
+        Toast.makeText(RoomActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -223,7 +280,9 @@ public class RoomActivity extends AppCompatActivity {
                 Log.d("create1", "Questions");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
                     String questionID=datas.getKey();
-                    questions.add(questionID);
+                    //questions.add(questionID);
+                    question.setID(questionID);
+
                     Log.d("create1", "QuestionNr: " + questionID);
                     DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
                     child(newUser.getSessionId()).child("Questions").child(questionID).child("Question");
@@ -267,6 +326,10 @@ public class RoomActivity extends AppCompatActivity {
                             String question1 = dataSnapshot.getValue(String.class);
                             Log.d("create1", "Question: " + question1);
                             question.setQuestionVisibility(question1);
+                            questions.add(question);
+
+
+                            vote();
                             showQuestion();
                             showQuestionDescrp();
 

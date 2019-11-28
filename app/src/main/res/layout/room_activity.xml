@@ -1,44 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#68A36A"
-    android:orientation="vertical">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigationbottom"
+        android:id="@+id/bottomNavigation2"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="#14A795"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_room">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <FrameLayout
-        android:id="@+id/framelayout"
-        android:layout_width="423dp"
-        android:layout_height="458dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navigationbottom">
-
-    </FrameLayout>
-
     <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="417dp"
-        android:layout_height="222dp"
-        android:background="#68A36A"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/sendVoteButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/framelayout">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="600dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="1"
                 android:textAlignment="center"
                 android:textSize="24sp"
@@ -62,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="2"
                 android:textAllCaps="true"
                 android:textSize="24sp"
@@ -73,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="3"
                 android:textAllCaps="true"
                 android:textSize="24sp"
@@ -83,7 +62,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="94dp"
             android:layout_marginTop="20dp"
             android:background="#68A36A"
             android:orientation="horizontal">
@@ -93,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="4"
                 android:textAlignment="center"
                 android:textSize="24sp"
@@ -104,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="5"
                 android:textAllCaps="true"
                 android:textSize="24sp"
@@ -115,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/button_border"
+                android:background="#A6B63B"
                 android:text="No Vote"
                 android:textAlignment="center"
                 android:textSize="24sp"
@@ -125,17 +104,4 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/sendVoteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/button_border"
-        android:text="Send Vote"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="-5dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
