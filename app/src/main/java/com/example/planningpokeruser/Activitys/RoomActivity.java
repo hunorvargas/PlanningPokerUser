@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,8 +16,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.planningpokeruser.Fragments.StaticsFragment;
 import com.example.planningpokeruser.Fragments.VoteFragment;
-import com.example.planningpokeruser.Methods.Question;
-import com.example.planningpokeruser.Methods.User;
+import com.example.planningpokeruser.Objects.Question;
+import com.example.planningpokeruser.Objects.User;
 import com.example.planningpokeruser.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;

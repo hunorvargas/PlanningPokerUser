@@ -1,4 +1,4 @@
-package com.example.planningpokeruser.Methods;
+package com.example.planningpokeruser.Objects;
 
 public class User {
 
