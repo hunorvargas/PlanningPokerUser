@@ -8,7 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.planningpokeruser.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,13 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 
 public class JoinActivity extends AppCompatActivity {
     EditText editUsername,editSessID;
     Button btnJoin;
     TextView errorText;
-    private String sessionid="";
-    private String usernamesesion="";
+    private String sessionid="",usernamesesion="",maxUserNameNumber;
     final ArrayList<String> sessionIDs = new ArrayList<>();
     final ArrayList<String> Users = new ArrayList<>();
 
@@ -45,25 +49,61 @@ public class JoinActivity extends AppCompatActivity {
                 final Intent intent = new Intent(JoinActivity.this,RoomActivity.class);
                // errorText.setText(" ");
 
-                intent.putExtra("Username",editUsername.getText().toString().trim());
-                intent.putExtra("SessionId",editSessID.getText().toString().trim());
+
                 setSessionid(editSessID.getText().toString().trim());
                 setUsernamesesion(editUsername.getText().toString().trim());
                 Log.d("create", "kell join:"+editSessID.getText().toString().trim());
 
-                if(isCompletdata() && isagoodSessionID() && isagoodusername()){
+
+                if(isCompletdata() && isagoodSessionID()){
+
+                    getData();
+
+
+                }
+
+            }
+        });
+    }
+
+    private void getData() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference  myRef = database.getReference();
+        myRef.child("Session").child("Groups").child(getSessionid()).child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("create", "UsersName Snap");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String username=datas.getKey();
+                    if(username.equals("MaxUsersNumber")){
+                        maxUserNameNumber=datas.getValue().toString();
+                        Log.d("create", "MaxUserNum: "+maxUserNameNumber);
+                    }
+                    Users.add(username);
+                    Log.d("create", "UsersName: " + username);
+                }
+                int userSize=Users.size()-1;
+                int MaxUserSize=parseInt(maxUserNameNumber);
+                if(isagoodusername() && userSize<=MaxUserSize){
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference  myRef = database.getReference();
 
                     myRef.child("Session").child("Groups").child(sessionid).child("Users").child(getUsernamesesion()).setValue(getUsernamesesion());
-
+                    Intent intent = new Intent(JoinActivity.this,RoomActivity.class);
                     setToastText("Join Sucsess!");
+                    intent.putExtra("Username",editUsername.getText().toString().trim());
+                    intent.putExtra("SessionId",editSessID.getText().toString().trim());
                     startActivity(intent);
                 }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
     }
 
     private void init() {
@@ -177,21 +217,7 @@ public class JoinActivity extends AppCompatActivity {
             }
         });
 
-        myRef.child("Session").child("Groups").child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("create", "UsersName Snap");
-                for(DataSnapshot datas: dataSnapshot.getChildren()){
-                    String username=datas.getKey();
-                    Users.add(username);
-                    Log.d("create", "UsersName: " + username);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
 
     }
 
