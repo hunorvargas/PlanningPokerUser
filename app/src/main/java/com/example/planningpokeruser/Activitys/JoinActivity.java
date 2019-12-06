@@ -73,7 +73,6 @@ public class JoinActivity extends AppCompatActivity {
         editUsername = findViewById(R.id.editUsername);
         editSessID =  findViewById(R.id.editSessID);
         btnJoin = findViewById(R.id.btnJoin);
-        errorText=findViewById(R.id.errorTextView);
 
     }
 
