@@ -2,6 +2,7 @@ package com.example.planningpokeruser.Fragments;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.planningpokeruser.Activitys.JoinActivity;
+import com.example.planningpokeruser.Activitys.RoomActivity;
 import com.example.planningpokeruser.Objects.Question;
 import com.example.planningpokeruser.Objects.User;
 import com.example.planningpokeruser.R;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -40,10 +45,11 @@ public class VoteFragment extends Fragment {
     Button voteButton1,voteButton2,voteButton3,voteButton4,voteButton5,novoteButton,sendVoteButton;
     TextView questiontextView,questionDescTextView;
     private View mView;
-    private String sessionID="",questionID="",vote=" ",currentDateTime;
+    private String vote=" ",currentDateTime,maxUserVoteNumber;
     private User newUser=new User();
     private Question question=new Question();
     ArrayList<Question> questions = new ArrayList<>();
+    final ArrayList<String> votedUsers = new ArrayList<>();
     private Date expireDate, currentDate;
     private boolean noDateTime=false;
 
@@ -215,7 +221,7 @@ public class VoteFragment extends Fragment {
 
                             if(question.getQuestionTime()!=" ")
                             showQuestion();
-                            vote();
+                            checkVoteNumbers();
 
                         }
 
@@ -235,6 +241,7 @@ public class VoteFragment extends Fragment {
         });
 
     }
+
     public void getVotefromButton(){
         voteButton1.setClickable(false);
         voteButton2.setClickable(false);
@@ -320,12 +327,15 @@ public class VoteFragment extends Fragment {
             if(noDateTime){
                 setQuestionDescTextView(question.getQuestionDesc());
                 setQuestiontextView(question.getQuestion());
+                checkVoteNumbers();
+
             }
             else
                 if (expireDate.after(currentDate)){
 
                     setQuestionDescTextView(question.getQuestionDesc());
                     setQuestiontextView(question.getQuestion());
+                    checkVoteNumbers();
             }
 
 
@@ -333,6 +343,43 @@ public class VoteFragment extends Fragment {
         else{
             Log.d("create1", "false");
         }
+    }
+
+    private void checkVoteNumbers() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference  myRef = database.getReference();
+
+        myRef.child("Session").child("Groups").child(newUser.getSessionId()).child("Questions")
+                .child(question.getID()).child("Results").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("create", "Results Snap");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String username=datas.getKey();
+                    if(username.equals("MaxUserVoteNumber")){
+                        maxUserVoteNumber=datas.getValue().toString();
+                        Log.d("create", "MaxUserNum: "+maxUserVoteNumber);
+                    }
+                    votedUsers.add(username);
+                    Log.d("create", "UsersName: " + username);
+                }
+                int votedUserSize=votedUsers.size()-1;
+                votedUsers.clear();
+                Log.d("create", "VotedUsers: " + votedUserSize);
+                int MaxVoteUserSize=parseInt(maxUserVoteNumber);
+                if(MaxVoteUserSize>votedUserSize){
+                    vote();
+                }
+                else {
+                    setToastText("This Room is full you can't Vote now!");
+                }
+            }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }});
     }
 
 
