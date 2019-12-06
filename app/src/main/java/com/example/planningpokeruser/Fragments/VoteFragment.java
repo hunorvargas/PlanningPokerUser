@@ -143,104 +143,7 @@ public class VoteFragment extends Fragment {
 
     }
 
-    private void getDatas() {
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference  myRef = database.getReference().child("Session").child("Groups").child(newUser.getSessionId()).child("Questions");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d("create1", "Questions");
-                for(DataSnapshot datas: dataSnapshot.getChildren()){
-                    String questionID=datas.getKey();
-                    question.setID(questionID);
-
-                    Log.d("create1", "QuestionNr: " + questionID);
-                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
-                            child(newUser.getSessionId()).child("Questions").child(questionID).child("Question");
-                    myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String question1 = dataSnapshot.getValue(String.class);
-                            question.setQuestion(question1);
-
-                            Log.d("create1", "Question: " + question1);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
-                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionDesc");
-                    myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String questionDesc = dataSnapshot.getValue(String.class);
-                            question.setQuestionDesc(questionDesc);
-
-                            Log.d("create1", "QuestionDesc: " + questionDesc);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    DatabaseReference  myRef6 = database.getReference().child("Session").child("Groups").
-                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionTime");
-                    myRef6.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String questionTime = dataSnapshot.getValue(String.class);
-                            question.setQuestionTime(questionTime);
-
-                            Log.d("create1", "QuestionTime: " + questionTime);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
-                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionVisibility");
-                    myRef4.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String questionVisibility = dataSnapshot.getValue(String.class);
-                            Log.d("create1", "QuestionVisibility: " + questionVisibility);
-                            question.setQuestionVisibility(questionVisibility);
-                            questions.add(question);
-
-                            if(question.getQuestionTime()!=" ")
-                            showQuestion();
-                            checkVoteNumbers();
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                }
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
 
     public void getVotefromButton(){
         voteButton1.setClickable(false);
@@ -351,10 +254,11 @@ public class VoteFragment extends Fragment {
         DatabaseReference  myRef = database.getReference();
 
         myRef.child("Session").child("Groups").child(newUser.getSessionId()).child("Questions")
-                .child(question.getID()).child("Results").addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(question.getID()).child("Results").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("create", "Results Snap");
+                votedUsers.clear();
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
                     String username=datas.getKey();
                     if(username.equals("MaxUserVoteNumber")){
@@ -382,6 +286,104 @@ public class VoteFragment extends Fragment {
                 }});
     }
 
+    private void getDatas() {
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference  myRef = database.getReference().child("Session").child("Groups").child(newUser.getSessionId()).child("Questions");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                questions.clear();
+                Log.d("create1", "Questions");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String questionID=datas.getKey();
+                    question.setID(questionID);
+
+                    Log.d("create1", "QuestionNr: " + questionID);
+                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("Question");
+                    myRef2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            question.setQuestion(question1);
+
+                            Log.d("create1", "Question: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionDesc");
+                    myRef3.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String questionDesc = dataSnapshot.getValue(String.class);
+                            question.setQuestionDesc(questionDesc);
+
+                            Log.d("create1", "QuestionDesc: " + questionDesc);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef6 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionTime");
+                    myRef6.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String questionTime = dataSnapshot.getValue(String.class);
+                            question.setQuestionTime(questionTime);
+
+                            Log.d("create1", "QuestionTime: " + questionTime);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
+                            child(newUser.getSessionId()).child("Questions").child(questionID).child("QuestionVisibility");
+                    myRef4.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String questionVisibility = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "QuestionVisibility: " + questionVisibility);
+                            question.setQuestionVisibility(questionVisibility);
+                            questions.add(question);
+
+                            if(question.getQuestionTime()!=" ")
+                                showQuestion();
+                            checkVoteNumbers();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public void setQuestiontextView(String questiontext) {
         this.questiontextView.setText(questiontext);

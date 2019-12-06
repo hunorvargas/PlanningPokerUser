@@ -22,7 +22,6 @@ import java.util.ArrayList;
 public class JoinActivity extends AppCompatActivity {
     EditText editUsername,editSessID;
     Button btnJoin;
-    TextView errorText;
     private String sessionid="",usernamesesion="";
     final ArrayList<String> sessionIDs = new ArrayList<>();
     final ArrayList<String> Users = new ArrayList<>();
@@ -160,10 +159,10 @@ public class JoinActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference  myRef = database.getReference();
 
-        myRef.child("Session").child("Groups").addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("Session").child("Groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                sessionIDs.clear();
                 Log.d("create1", "SessionIDSnap");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
                     String sessionID=datas.getKey();
