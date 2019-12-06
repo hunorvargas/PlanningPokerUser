@@ -98,14 +98,15 @@ public class VoteFragment extends Fragment {
     }
 
     private void vote() {
-
+        Log.d("create1", "Vote : " + question.getQuestionVisibility()+ " " + expireDate);
         if (question.getQuestionVisibility().equals("true") && noDateTime) {
-
+            Log.d("create1", "NoDateTime : ");
             getVotefromButton();
-
         }
         else
+            Log.d("create1", "CurrentDate : " + currentDate);
             if(question.getQuestionVisibility().equals("true") && expireDate.after(currentDate)){
+                Log.d("create1", "Van DateTIme : ");
             getVotefromButton();
         }
 
@@ -273,10 +274,12 @@ public class VoteFragment extends Fragment {
                 Log.d("create", "VotedUsers: " + votedUserSize);
                 int MaxVoteUserSize=parseInt(maxUserVoteNumber);
                 if(MaxVoteUserSize>votedUserSize){
+                    Log.d("create", "MaxVote > votedUser" );
                     vote();
                 }
                 else {
-                    setToastText("This Room is full you can't Vote now!");
+                    Log.d("create", "Nem nagyobb " );
+                   // setToastText("This Room is full you can't Vote now!");
                 }
             }
 
@@ -362,10 +365,12 @@ public class VoteFragment extends Fragment {
                             question.setQuestionVisibility(questionVisibility);
                             questions.add(question);
 
-                            if(question.getQuestionTime()!=" ")
+                            if(question.getQuestionTime()!=" ") {
                                 showQuestion();
+                                Log.d("create1", "QuestionTIme != " );
+                            }
                             checkVoteNumbers();
-
+                            Log.d("create1", "ChekVoteNumbers" );
                         }
 
                         @Override

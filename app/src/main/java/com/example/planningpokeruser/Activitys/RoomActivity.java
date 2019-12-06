@@ -2,12 +2,8 @@ package com.example.planningpokeruser.Activitys;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,17 +12,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.planningpokeruser.Fragments.StaticsFragment;
 import com.example.planningpokeruser.Fragments.VoteFragment;
-import com.example.planningpokeruser.Objects.Question;
 import com.example.planningpokeruser.Objects.User;
 import com.example.planningpokeruser.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -84,6 +72,7 @@ public class RoomActivity extends AppCompatActivity {
                         setFragment(voteFragment);
                         return true;
                     case R.id.viewStaticsIcon:
+                        staticsFragment.setSessionID(newUser.getSessionId());
                         setFragment(staticsFragment);
                         return true;
                 }
