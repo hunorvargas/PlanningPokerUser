@@ -1,6 +1,6 @@
 # PlanningPokerUser
 
-This is a a part App of the big "Planning Poker" proiect.
+This is a a part App of the big "Planning Poker" project.
 The is is the User App.
 The client can login in a Group/Session by ID and user name.
 If is a active question the user can vote for this Question 1-5.
