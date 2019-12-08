@@ -35,17 +35,17 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 
-    private void init() {
+    private void init() {  //Init variables, get data from annother activity
 
 
-        frameLayout=findViewById(R.id.framelayout);
-        navigationView=findViewById(R.id.navigationbottom);
-        voteFragment=new VoteFragment();
-        staticsFragment=new StaticsFragment();
+        frameLayout = findViewById(R.id.framelayout);
+        navigationView = findViewById(R.id.navigationbottom);
+        voteFragment = new VoteFragment();
+        staticsFragment = new StaticsFragment();
 
-        newUser=new User();
+        newUser = new User();
 
-        Intent intent= getIntent();
+        Intent intent = getIntent();
 
         newUser.setUserName(intent.getStringExtra("Username"));
         newUser.setSessionId(intent.getStringExtra("SessionId"));
@@ -62,12 +62,12 @@ public class RoomActivity extends AppCompatActivity {
 
     }
 
-    private void navigationViewlistener() {
+    private void navigationViewlistener() { //Navigation listener for switch the fragments
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                switch ((menuItem.getItemId())){
+                switch ((menuItem.getItemId())) {
                     case R.id.voteQuestionIcon:
                         setFragment(voteFragment);
                         return true;
@@ -81,9 +81,9 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    private void setFragment(Fragment fragments) {
+    private void setFragment(Fragment fragments) { //Replace the correct fragment from NavigationListener
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.framelayout,fragments);
+        fragmentTransaction.replace(R.id.framelayout, fragments);
         fragmentTransaction.commit();
     }
 

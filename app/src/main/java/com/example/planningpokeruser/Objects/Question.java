@@ -4,15 +4,26 @@ import java.util.ArrayList;
 
 public class Question {
 
+    ArrayList<User> users = new ArrayList<>();
     private String question;
     private String ID;
     private String questionDesc;
     private String questionVisibility;
     private String questionTime;
-    ArrayList<User> users = new ArrayList<>();
 
     public String getID() {
         return ID;
+    }
+
+    public Question() {
+    }
+
+    public Question(String question, String ID, String questionDesc, String questionVisibility, String questionTime) {
+        this.question = question;
+        this.ID = ID;
+        this.questionDesc = questionDesc;
+        this.questionVisibility = questionVisibility;
+        this.questionTime = questionTime;
     }
 
     public void setID(String ID) {
@@ -62,7 +73,9 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "question='" + question + '\'' +
+                "users=" + users +
+                ", question='" + question + '\'' +
+                ", ID='" + ID + '\'' +
                 ", questionDesc='" + questionDesc + '\'' +
                 ", questionVisibility='" + questionVisibility + '\'' +
                 ", questionTime='" + questionTime + '\'' +

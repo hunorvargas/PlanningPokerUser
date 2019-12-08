@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         intentJoin = new Intent(MainActivity.this, JoinActivity.class);
 
-        creatSessionButton = (Button) findViewById(R.id.buttonLogin);
+        creatSessionButton = findViewById(R.id.buttonLogin);
         creatSessionButton.setOnClickListener(this);
 
     }

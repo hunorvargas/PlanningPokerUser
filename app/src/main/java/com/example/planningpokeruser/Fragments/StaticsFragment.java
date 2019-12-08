@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.planningpokeruser.Objects.Question;
 import com.example.planningpokeruser.Objects.User;
 import com.example.planningpokeruser.R;
@@ -43,7 +45,7 @@ public class StaticsFragment extends Fragment {
     private Date expireDate, currentDate;
     private boolean noDateTime=false;
 
-
+// init variables, getDatas from Firebase create RecyclerView
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         init();
@@ -55,7 +57,7 @@ public class StaticsFragment extends Fragment {
         return mView;
     }
 
-    private void init() {
+    private void init() { // init
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yy/HH:mm");
         String formattedDate = df.format(c.getTime());
@@ -64,7 +66,7 @@ public class StaticsFragment extends Fragment {
     }
 
 
-    private class RecylerViewHolder extends RecyclerView.ViewHolder{
+    private class RecylerViewHolder extends RecyclerView.ViewHolder{  //RecycleView
         private CardView mCardView;
         private TextView userNameTextView,userVoteTextView;
 
@@ -100,7 +102,7 @@ public class StaticsFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final RecylerViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final RecylerViewHolder holder, final int position) { // add data for Recycler View
 
             Log.d("create2", "Fragment ViewHolder: " );
             Log.d("create2", "Fragment While " + results.size()+ " " + position);
@@ -129,7 +131,7 @@ public class StaticsFragment extends Fragment {
     }
 
 
-    public void getDatas(){
+    public void getDatas(){  //Get Datas From Firebase
 
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -187,7 +189,6 @@ public class StaticsFragment extends Fragment {
                                                         maxVoteNum=datas.getValue().toString();
                                                     }
                                                 }
-                                             //   Log.d("create2", "MaxVoteNUm: "+ datas.getValue().toString());
 
                                             }
                                             question.setUsers(results);
@@ -206,24 +207,25 @@ public class StaticsFragment extends Fragment {
                                                 Log.d("create1", e.toString());
                                             }
                                             try {
-                                                expireDate.after(currentDate);
+                                                expireDate.after(currentDate); //try to compare dateas
                                             }
                                             catch (NullPointerException e){
                                                 noDateTime=true;
                                             }
                                             if(noDateTime && question.getUsers().size()==maxvote){
-                                                    mrecyclerView.setAdapter(new RecyclerViewAdapter(question.getUsers()));
-                                                    Log.d("create2", "CallRecycleviewNo date Time: " + question.getUsers());
+                                                mrecyclerView.setAdapter(new RecyclerViewAdapter(question.getUsers())); // call recycler view with users list
+                                                Log.d("create2", "CallRecycleviewNo date Time: " + question.getUsers());
 
                                             }
                                             else {
-                                                Log.d("create2", "CallRecycleviewDateTIme: " + currentDate.after(expireDate));
-                                                if(question.getUsers().size()== maxvote || currentDate.after(expireDate) ) {
+                                                if (noDateTime) {  //if no time set for question just visiblity
+
+                                                } else
+                                                if(question.getUsers().size()== maxvote || currentDate.after(expireDate) ) { // call same function
                                                     mrecyclerView.setAdapter(new RecyclerViewAdapter(question.getUsers()));
                                                     Log.d("create2", "CallRecycleviewDateTIme: " + question.getUsers());
                                                 }
                                             }
-
                                         }
 
                                         @Override
@@ -258,9 +260,6 @@ public class StaticsFragment extends Fragment {
         });
     }
 
-    public String getCurrentDateTime() {
-        return currentDateTime;
-    }
 
     public void setCurrentDateTime(String currentDateTime) {
         this.currentDateTime = currentDateTime;
